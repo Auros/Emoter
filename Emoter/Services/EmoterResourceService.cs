@@ -1,4 +1,5 @@
 ﻿using IPA.Loader;
+using IPA.Utilities.Async;
 using SiraUtil.Logging;
 using SiraUtil.Zenject;
 using System.IO;
@@ -36,28 +37,34 @@ internal class EmoterResourceService : IEmoterResourceService, ILateDisposable
         if (_shader != null)
             return _shader;
 
-        if (_isLoading)
+        await UnityMainThreadTaskScheduler.Factory.StartNew(async () =>
         {
-            while (_isLoading)
+            if (_shader != null)
+                return;
+
+            if (_isLoading)
+            {
+                while (_isLoading)
+                    await Task.Yield();
+
+                return;
+            }
+
+            _isLoading = true;
+            _siraLog.Debug("Loading bundle resource stream.");
+            using Stream stream = _assembly.GetManifestResourceStream(RESOURCE_PATH);
+            _siraLog.Debug("Loading asset bundle from stream.");
+            var request = AssetBundle.LoadFromStreamAsync(stream);
+            while (!request.isDone)
                 await Task.Yield();
 
-            return _shader!;
-        }
-
-        _isLoading = true;
-        _siraLog.Debug("Loading bundle resource stream.");
-        using Stream stream = _assembly.GetManifestResourceStream(RESOURCE_PATH);
-        _siraLog.Debug("Loading asset bundle from stream.");
-        var request = AssetBundle.LoadFromStreamAsync(stream);
-        while (!request.isDone)
-            await Task.Yield();
-
-        _assetBundle = request.assetBundle;
-        _siraLog.Debug("Asset bundle loaded. Fetching Emote Shader.");
-        _shader = _assetBundle.LoadAsset<Shader>("S_EmoterEmote");
-        _assetBundle.Unload(false);
-        _isLoading = false;
-        return _shader;
+            _assetBundle = request.assetBundle;
+            _siraLog.Debug("Asset bundle loaded. Fetching Emote Shader.");
+            _shader = _assetBundle.LoadAsset<Shader>("S_EmoterEmote");
+            _assetBundle.Unload(false);
+            _isLoading = false;
+        });
+        return _shader!;
     }
 
     public void LateDispose()

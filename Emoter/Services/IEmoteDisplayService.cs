@@ -5,5 +5,5 @@ namespace Emoter.Services;
 
 internal interface IEmoteDisplayService
 {
-    void Spawn(Emote emote, Vector3 position);
+    void Spawn(Emote emote, Vector3 position, Vector3? direction = null);
 }

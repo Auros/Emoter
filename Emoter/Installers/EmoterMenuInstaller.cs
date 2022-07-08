@@ -1,5 +1,6 @@
 ﻿using Emoter.Components;
 using Emoter.Daemons;
+using Emoter.Services;
 using Emoter.UI.Main.Controllers;
 using UnityEngine;
 using Zenject;
@@ -16,6 +17,18 @@ internal class EmoterMenuInstaller : Installer
         Container.Bind<QuickEmoteViewController>().FromNewComponentAsViewController().AsSingle();
 
         Container.BindMemoryPool<EmoterImage, EmoterImage.Pool>().WithId(EmoterImage.Pool.Id).WithInitialSize(0).FromMethod(FactoryMethod);
+
+
+        bool useLocal = true;
+        if (useLocal)
+        {
+            Container.Bind<IEmoteDispatcher>().To<LocalEmoteDispatcher>().AsSingle();
+            Container.Bind<IEmoteDisplayService>().To<BasicEmoteDisplayService>().AsSingle();
+        }
+        else
+        {
+
+        }
     }
 
     private EmoterImage FactoryMethod(DiContainer _)
