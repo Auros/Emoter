@@ -1,29 +1,19 @@
 ﻿<vertical xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd"
-  bg="round-rect-panel" bg-color="#00ffff55" horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="48" pref-height="44">
-  <vertical pref-width="40" pref-height="10">
-    <list-setting text="" options="categories" pref-width="40" pref-height="4" />
+  bg="round-rect-panel" bg-color="#00ffff55" horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="50" pref-height="48">
+  <vertical pref-width="40" pref-height="8">
+    <list-setting active="~show-category-list" value="selected-category" options="categories" pref-width="50" pref-height="8" text="" bind-value="true" apply-on-change="true" />
+    <loading active="~hide-category-list" preserve-aspect="true" />
   </vertical>
-  <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="46" pref-height="40">
-    <button id="left-nav" pref-width="2" pref-height="35" text="🠔" italics="false" />
-    <grid id="grid" horizontal-fit="PreferredSize" vertical-fit="PreferredSize" size-delta-x="40" size-delta-y="40" cell-size-x="8" cell-size-y="8" child-align="UpperLeft" spacing-x="0.5" spacing-y="0.5">
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-      <clickable-image src="https://pbs.twimg.com/profile_images/1543587703954051073/3uQsD-gO_400x400.jpg" pref-width="8" pref-height="8" />
-    </grid>
-    <button id="right-nav" pref-width="2" pref-height="35" text="🠖" italics="false" />
+  <vertical active="~show-content" horizontal-fit="PreferredSize" vertical-fit="Unconstrained" pref-width="50" pref-height="42">
+    <scroll-view size-delta-x="50">
+      <grid id="grid" cell-size-x="8" cell-size-y="8" child-align="UpperLeft" spacing-x="0.5" spacing-y="0.5" size-delta-y="~grid-y">
+      </grid>
+    </scroll-view>
+  </vertical>
+  <horizontal active="~hide-content" horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="46" pref-height="40">
+    <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
+      <loading pref-width="15" pref-height="15" preserve-aspect="true" />
+    </horizontal>
   </horizontal>
 </vertical>

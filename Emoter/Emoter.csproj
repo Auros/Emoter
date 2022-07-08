@@ -37,6 +37,19 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Emotes\Unicode\Angry.png" />
+	  <None Remove="Resources\Emotes\Unicode\Circle.png" />
+	  <None Remove="Resources\Emotes\Unicode\Cowboy.png" />
+	  <None Remove="Resources\Emotes\Unicode\Cross.png" />
+	  <None Remove="Resources\Emotes\Unicode\FaceWithHearts.png" />
+	  <None Remove="Resources\Emotes\Unicode\FaceWithRaisedEyebrow.png" />
+	  <None Remove="Resources\Emotes\Unicode\Frowning.png" />
+	  <None Remove="Resources\Emotes\Unicode\Grinning.png" />
+	  <None Remove="Resources\Emotes\Unicode\Heart.png" />
+	  <None Remove="Resources\Emotes\Unicode\HeartEyes.png" />
+	  <None Remove="Resources\Emotes\Unicode\Joy.png" />
+	  <None Remove="Resources\Emotes\Unicode\Neutral.png" />
+	  <None Remove="Resources\Emotes\Unicode\Skull.png" />
 	  <None Remove="UI\Main\Views\quick-emote-view.bsml" />
 	</ItemGroup>
 
@@ -139,6 +152,19 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="manifest.json" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\Angry.png" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\Circle.png" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\Cowboy.png" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\Cross.png" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\FaceWithHearts.png" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\FaceWithRaisedEyebrow.png" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\Frowning.png" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\Grinning.png" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\Heart.png" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\HeartEyes.png" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\Joy.png" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\Neutral.png" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\Skull.png" />
 		<EmbeddedResource Include="UI\Main\Views\quick-emote-view.bsml" />
 	</ItemGroup>
 

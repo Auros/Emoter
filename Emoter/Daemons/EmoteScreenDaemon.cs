@@ -47,7 +47,7 @@ internal class EmoteScreenDaemon : IInitializable, IDisposable
 
         screen.SetRootViewController(_quickEmoteViewController, ViewController.AnimationType.In);
 
-        rectTransform.sizeDelta = new Vector2(40, 40);
+        rectTransform.sizeDelta = new Vector2(48f, 48f);
 
         emoterScreen.layer = 5;
 
