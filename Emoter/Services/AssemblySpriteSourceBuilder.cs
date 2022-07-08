@@ -38,15 +38,15 @@ internal class AssemblySpriteSourceBuilder : ISpriteSourceBuilder, ILateDisposab
         }
         catch (FileNotFoundException)
         {
-            return _emoteErrorSpriteService.GetErrorSprite(EmoteError.NotFound);
+            return await _emoteErrorSpriteService.GetErrorSpriteAsync(EmoteError.NotFound);
         }
         catch
         {
-            return _emoteErrorSpriteService.GetErrorSprite(EmoteError.LoadingFailed);
+            return await _emoteErrorSpriteService.GetErrorSpriteAsync(EmoteError.LoadingFailed);
         }
 
         if (bytes is null)
-            return _emoteErrorSpriteService.GetErrorSprite(EmoteError.LoadingFailed);
+            return await _emoteErrorSpriteService.GetErrorSpriteAsync(EmoteError.LoadingFailed);
 
         var sprite = await UnityMainThreadTaskScheduler.Factory.StartNew(() =>
         {
@@ -65,7 +65,7 @@ internal class AssemblySpriteSourceBuilder : ISpriteSourceBuilder, ILateDisposab
         });
 
         if (sprite is null)
-            return _emoteErrorSpriteService.GetErrorSprite(EmoteError.LoadingFailed);
+            return await _emoteErrorSpriteService.GetErrorSpriteAsync(EmoteError.LoadingFailed);
 
         _spritesMade.Add(sprite);
         return sprite;

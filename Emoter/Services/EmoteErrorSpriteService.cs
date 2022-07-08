@@ -1,7 +1,9 @@
 ﻿using BeatSaberMarkupLanguage;
 using Emoter.Models;
+using IPA.Utilities.Async;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
@@ -9,21 +11,29 @@ namespace Emoter.Services;
 
 internal interface IEmoteErrorSpriteService
 {
-    Sprite GetErrorSprite(EmoteError type);
+    Task<Sprite> GetErrorSpriteAsync(EmoteError type);
 }
 
 internal class EmoteErrorSpriteService : IEmoteErrorSpriteService, ILateDisposable
 {
     private readonly Dictionary<EmoteError, Sprite> _errorSprites = new();
 
-    public Sprite GetErrorSprite(EmoteError type)
+    public async Task<Sprite> GetErrorSpriteAsync(EmoteError type)
     {
         if (!_errorSprites.TryGetValue(type, out Sprite sprite))
+        {
+            if (!IPA.Utilities.UnityGame.OnMainThread)
+                await UnityMainThreadTaskScheduler.Factory.StartNew(LoadSprite);
+            else
+                LoadSprite();
+        }
+
+        void LoadSprite()
         {
             var tex = Utilities.FindTextureInAssembly(GetErrorPath(type));
             sprite = Sprite.Create(tex, new(0f, 0f, tex.width, tex.height), Vector2.zero, 100f, 0, SpriteMeshType.FullRect);
             tex.wrapMode = TextureWrapMode.Clamp;
-            _errorSprites.Add(type, sprite);
+            _errorSprites[type] = sprite;
         }
         return sprite;
     }
