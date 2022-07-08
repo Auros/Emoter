@@ -25,10 +25,6 @@ internal class EmoteStore
             BuildEmoteFromResource(Guid.Parse("e92ab98c-5a47-40aa-abe7-6e5716df3051"), nameof(Unicode), "Circle"),
             BuildEmoteFromResource(Guid.Parse("570ec09e-b8b1-4163-8f71-692001bbb036"), nameof(Unicode), "Cross"),
             BuildEmoteFromResource(Guid.Parse("cd02de89-3714-4c27-882c-7bfbb2e19c84"), nameof(Unicode), "Heart"),
-            BuildEmoteFromResource(Guid.Parse("cd02de89-3714-4c27-882c-7bfbb2e19c85"), nameof(Unicode), "Heart"),
-            BuildEmoteFromResource(Guid.Parse("cd02de89-3714-4c27-882c-7bfbb2e19c86"), nameof(Unicode), "Heart"),
-            BuildEmoteFromResource(Guid.Parse("cd02de89-3714-4c27-882c-7bfbb2e19c87"), nameof(Unicode), "Heart"),
-            BuildEmoteFromResource(Guid.Parse("cd02de89-3714-4c27-882c-7bfbb2e19c88"), nameof(Unicode), "Heart"),
         }
     };
 

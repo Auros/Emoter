@@ -1,10 +1,7 @@
-﻿using Emoter.Daemons;
-using Emoter.Installers;
-using Emoter.UI.Main.Controllers;
+﻿using Emoter.Installers;
 using IPA;
 using SiraUtil.Zenject;
 using System;
-using Zenject;
 using IPALogger = IPA.Logging.Logger;
 
 namespace Emoter;
@@ -18,6 +15,7 @@ public class Plugin
     public Plugin(IPALogger logger, Zenjector zenjector)
     {
         zenjector.UseLogger(logger);
+        zenjector.UseMetadataBinder<Plugin>();
         zenjector.Install<EmoterCoreInstaller>(Location.App);
         zenjector.Install<EmoterMenuInstaller>(Location.Menu);
     }

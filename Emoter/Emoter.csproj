@@ -50,6 +50,9 @@
 	  <None Remove="Resources\Emotes\Unicode\Joy.png" />
 	  <None Remove="Resources\Emotes\Unicode\Neutral.png" />
 	  <None Remove="Resources\Emotes\Unicode\Skull.png" />
+	  <None Remove="Resources\Errors\InvalidPermissions.png" />
+	  <None Remove="Resources\Errors\LoadingFailed.png" />
+	  <None Remove="Resources\Errors\NotFound.png" />
 	  <None Remove="UI\Main\Views\quick-emote-view.bsml" />
 	</ItemGroup>
 
@@ -165,6 +168,9 @@
 		<EmbeddedResource Include="Resources\Emotes\Unicode\Joy.png" />
 		<EmbeddedResource Include="Resources\Emotes\Unicode\Neutral.png" />
 		<EmbeddedResource Include="Resources\Emotes\Unicode\Skull.png" />
+		<EmbeddedResource Include="Resources\Errors\InvalidPermissions.png" />
+		<EmbeddedResource Include="Resources\Errors\LoadingFailed.png" />
+		<EmbeddedResource Include="Resources\Errors\NotFound.png" />
 		<EmbeddedResource Include="UI\Main\Views\quick-emote-view.bsml" />
 	</ItemGroup>
 

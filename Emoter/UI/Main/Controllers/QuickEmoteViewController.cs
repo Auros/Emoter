@@ -29,29 +29,18 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
     private Guid? _lastSelectedCategory;
     private bool _showCategoryList = true;
     private EmoteCategory _selectedCategory = null!;
-
-    [Inject]
-    protected readonly SiraLog _siraLog = null!;
-
-    [Inject]
-    protected readonly IEmoteService _emoteService = null!;
-
-    [Inject(Id = EmoterImage.Pool.Id)]
-    protected readonly EmoterImage.Pool _imageMemoryPool = null!;
-
     protected MemoryPoolContainer<EmoterImage>? _imagePoolContainer;
 
-    [UIValue("categories")]
-    protected List<object> Categories = new() { new EmoteCategory(), new EmoteCategory() };
+    [Inject] protected readonly SiraLog _siraLog = null!;
+    [Inject] protected readonly IEmoteService _emoteService = null!;
+    [Inject] protected readonly ISpriteSourceBuilder _spriteSourceBuilder = null!;
+    [Inject(Id = EmoterImage.Pool.Id)] protected readonly EmoterImage.Pool _imageMemoryPool = null!;
 
-    [UIComponent("grid")]
-    private readonly RectTransform _grid = null!;
+    [UIComponent("grid")] private readonly RectTransform _grid = null!;
+    [UIValue("hide-content")] protected bool HideContent => !_showContent;
+    [UIValue("hide-category-list")] protected bool HideCategoryList => !_showCategoryList;
+    [UIValue("categories")] protected List<object> Categories = new() { new EmoteCategory() };
 
-    [UIValue("hide-category-list")]
-    protected bool HideCategoryList => !_showCategoryList;
-
-    [UIValue("hide-content")]
-    protected bool HideContent => !_showContent;
 
     [UIValue("show-content")]
     protected bool ShowContent
@@ -196,17 +185,14 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
             ShowContent = false;
         });
 
-        ConcurrentBag<(Emote, byte[])> loaded = new();
+        ConcurrentBag<(Emote, Sprite)> loadedBag = new();
         var assembly = Assembly.GetExecutingAssembly();
-        var result = Parallel.ForEach(category.Emotes, emote =>
+        var result = Parallel.ForEach(category.Emotes, async emote =>
         {
             // todo: move into service
 
-            using var str = assembly.GetManifestResourceStream(emote.Source);
-            using MemoryStream ms = new();
-            str.CopyTo(ms);
-
-            loaded.Add((emote, ms.ToArray()));
+            var sprite = await _spriteSourceBuilder.BuildSpriteAsync(emote.Source);
+            loadedBag.Add((emote, sprite));
         });
 
         while (!result.IsCompleted)
@@ -214,28 +200,17 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
 
         await UnityMainThreadTaskScheduler.Factory.StartNew(() =>
         {
-            List<(Emote, Sprite)> loadedEmotes = new();
-            foreach (var e in loaded)
+            if (_imagePoolContainer is null)
+                return;
+
+            List<(Emote, Sprite)> loadedSprites = loadedBag.OrderBy(le => category.Emotes.IndexOf(le.Item1)).ToList();
+            foreach (var emote in loadedSprites)
             {
-                var tex = Utilities.LoadTextureRaw(e.Item2);
-                tex.wrapMode = TextureWrapMode.Clamp;
-                var sprite = Sprite.Create(tex, new(0f, 0f, tex.width, tex.height), Vector2.zero, 100f, 0, SpriteMeshType.FullRect);
-                loadedEmotes.Add((e.Item1, sprite));
-                tex.name = e.Item1.Name;
-            }
+                var image = _imagePoolContainer.Spawn();
+                image.sprite = emote.Item2;
 
-            loadedEmotes = loadedEmotes.OrderBy(le => category.Emotes.IndexOf(le.Item1)).ToList();
-
-            if (_imagePoolContainer != null)
-            {
-                foreach (var emote in loadedEmotes)
-                {
-                    var image = _imagePoolContainer.Spawn();
-                    image.sprite = emote.Item2;
-
-                    image.transform.SetParent(_grid, false);
-                    image.transform.localScale = Vector3.one;
-                }
+                image.transform.SetParent(_grid, false);
+                image.transform.localScale = Vector3.one;
             }
             ShowContent = true;
         });
