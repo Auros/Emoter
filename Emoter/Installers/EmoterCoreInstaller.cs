@@ -1,5 +1,4 @@
 ﻿using Emoter.Services;
-using System;
 using Zenject;
 
 namespace Emoter.Installers;
@@ -8,6 +7,7 @@ internal class EmoterCoreInstaller : Installer
 {
     public override void InstallBindings()
     {
+        bool useLocal = true;
         bool useCachedService = true;
 
         Container.BindInterfacesTo<OfflineEmoteService>().AsSingle();
@@ -22,6 +22,16 @@ internal class EmoterCoreInstaller : Installer
         else
         {
             Container.BindInterfacesAndSelfTo<AssemblySpriteSourceBuilder>().AsSingle();
+        }
+
+        if (useLocal)
+        {
+            Container.Bind<IEmoteDispatcher>().To<LocalEmoteDispatcher>().AsSingle();
+            Container.Bind<IEmoteDisplayService>().To<BasicEmoteDisplayService>().AsSingle();
+        }
+        else
+        {
+
         }
     }
 }

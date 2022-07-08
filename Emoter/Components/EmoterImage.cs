@@ -1,7 +1,10 @@
 ﻿using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Components;
+using Emoter.Models;
+using System;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zenject;
 
@@ -11,6 +14,14 @@ internal class EmoterImage : ClickableImage
 {
     private LayoutElement _layoutElement = null!;
     private static readonly float _imageSize = 8f;
+
+    private Emote? _emote;
+    public event Action<EmoterImage, Emote>? EmoteClicked;
+
+    public void SetData(Emote emote)
+    {
+        _emote = emote;
+    }
 
     protected override void Awake()
     {
@@ -36,6 +47,24 @@ internal class EmoterImage : ClickableImage
         return component;
     }
 
+    protected override void Start()
+    {
+        base.Start();
+        OnClickEvent += ClickEventFired;
+    }
+
+    private void ClickEventFired(PointerEventData _)
+    {
+        if (_emote != null)
+            EmoteClicked?.Invoke(this, _emote);
+    }
+
+    protected override void OnDestroy()
+    {
+        OnClickEvent -= ClickEventFired;
+        base.OnDestroy();
+    }
+
     private static Material _roundEdgeMaterial = null!;
     public static Material RoundEdgeMaterial
     {
@@ -46,6 +75,8 @@ internal class EmoterImage : ClickableImage
             return _roundEdgeMaterial;
         }
     }
+
+
 
     public class Pool : MonoMemoryPool<EmoterImage>
     {

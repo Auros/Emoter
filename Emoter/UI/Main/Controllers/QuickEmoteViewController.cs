@@ -1,5 +1,4 @@
-﻿using BeatSaberMarkupLanguage;
-using BeatSaberMarkupLanguage.Attributes;
+﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.ViewControllers;
 using Emoter.Components;
 using Emoter.Models;
@@ -9,7 +8,6 @@ using SiraUtil.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -33,6 +31,7 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
 
     [Inject] protected readonly SiraLog _siraLog = null!;
     [Inject] protected readonly IEmoteService _emoteService = null!;
+    [Inject] protected readonly IEmoteDispatcher _emoteDispatcher = null!;
     [Inject] protected readonly ISpriteSourceBuilder _spriteSourceBuilder = null!;
     [Inject(Id = EmoterImage.Pool.Id)] protected readonly EmoterImage.Pool _imageMemoryPool = null!;
 
@@ -180,7 +179,10 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
         {
             if (_imagePoolContainer != null)
                 foreach (var activeItem in _imagePoolContainer.activeItems.ToArray()) // We copy it to an array so we don't modify the enumerable we are iterating over 
+                {
+                    activeItem.EmoteClicked -= Image_EmoteClicked;
                     _imagePoolContainer.Despawn(activeItem);
+                }
 
             ShowContent = false;
         });
@@ -189,8 +191,6 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
         var assembly = Assembly.GetExecutingAssembly();
         var result = Parallel.ForEach(category.Emotes, async emote =>
         {
-            // todo: move into service
-
             var sprite = await _spriteSourceBuilder.BuildSpriteAsync(emote.Source);
             loadedBag.Add((emote, sprite));
         });
@@ -208,12 +208,20 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
             {
                 var image = _imagePoolContainer.Spawn();
                 image.sprite = emote.Item2;
+                image.SetData(emote.Item1);
 
                 image.transform.SetParent(_grid, false);
                 image.transform.localScale = Vector3.one;
+
+                image.EmoteClicked += Image_EmoteClicked;
             }
             ShowContent = true;
         });
+    }
+
+    private void Image_EmoteClicked(EmoterImage _, Emote emote)
+    {
+        _emoteDispatcher.Dispatch(emote);
     }
 
     protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
