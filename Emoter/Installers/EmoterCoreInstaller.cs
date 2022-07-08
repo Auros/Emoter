@@ -11,6 +11,7 @@ internal class EmoterCoreInstaller : Installer
         bool useCachedService = true;
 
         Container.BindInterfacesTo<OfflineEmoteService>().AsSingle();
+        Container.BindInterfacesTo<EmoterResourceService>().AsSingle();
         Container.BindInterfacesTo<EmoteErrorSpriteService>().AsSingle();
     
         if (useCachedService)

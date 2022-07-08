@@ -37,6 +37,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Bundle.asset" />
+	  <None Remove="Resources\DESCRIPTION.md" />
 	  <None Remove="Resources\Emotes\Unicode\Angry.png" />
 	  <None Remove="Resources\Emotes\Unicode\Circle.png" />
 	  <None Remove="Resources\Emotes\Unicode\Cowboy.png" />
@@ -99,6 +101,9 @@
 			<HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Unity.TextMeshPro.dll</HintPath>
 			<Private>False</Private>
 		</Reference>
+		<Reference Include="UnityEngine.AssetBundleModule">
+		  <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+		</Reference>
 		<Reference Include="UnityEngine.AudioModule">
 			<HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
 			<Private>False</Private>
@@ -155,6 +160,8 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="manifest.json" />
+		<EmbeddedResource Include="Resources\Bundle.asset" />
+		<EmbeddedResource Include="Resources\DESCRIPTION.md" />
 		<EmbeddedResource Include="Resources\Emotes\Unicode\Angry.png" />
 		<EmbeddedResource Include="Resources\Emotes\Unicode\Circle.png" />
 		<EmbeddedResource Include="Resources\Emotes\Unicode\Cowboy.png" />

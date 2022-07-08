@@ -4,7 +4,10 @@ using System.Collections.Generic;
 
 namespace Emoter;
 
-internal class EmoteStore
+/// <summary>
+/// For offline emotes, there GUIDs can be random but need to be unique (for both the category ids and emote ids)
+/// </summary>
+internal class OfflineEmoteStore
 {
     public static EmoteCategory Unicode = new()
     {

@@ -13,7 +13,7 @@ internal class OfflineEmoteService : IEmoteService
         {
             new EmoteCategory { Id = Plugin.FavoritesCategoryId, Name = "Favorites" }
         };
-        categories.AddRange(EmoteStore.OfflineCategories);
+        categories.AddRange(OfflineEmoteStore.OfflineCategories);
 
         return Task.FromResult<IReadOnlyList<EmoteCategory>>(categories);
     }

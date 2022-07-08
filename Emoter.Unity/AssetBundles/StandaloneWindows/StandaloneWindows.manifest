@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 2886913360
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: emoter
+      Dependencies: {}

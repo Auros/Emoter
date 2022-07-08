@@ -14,6 +14,7 @@ public class Plugin
     [Init]
     public Plugin(IPALogger logger, Zenjector zenjector)
     {
+        zenjector.UseAutoBinder();
         zenjector.UseLogger(logger);
         zenjector.UseMetadataBinder<Plugin>();
         zenjector.Install<EmoterCoreInstaller>(Location.App);
