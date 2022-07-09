@@ -1,8 +1,12 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
+using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using Emoter.Components;
 using Emoter.Models;
 using Emoter.Services;
+using Emoter.Services.Other;
+using Emoter.UI.Main.Contexts;
+using HMUI;
 using IPA.Utilities.Async;
 using SiraUtil.Logging;
 using System;
@@ -29,17 +33,23 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
     private EmoteCategory _selectedCategory = null!;
     protected MemoryPoolContainer<EmoterImage>? _imagePoolContainer;
 
+    [Inject] protected readonly Config _config = null!;
     [Inject] protected readonly SiraLog _siraLog = null!;
     [Inject] protected readonly IEmoteService _emoteService = null!;
     [Inject] protected readonly IEmoteDispatcher _emoteDispatcher = null!;
+    [Inject] protected readonly IFavoritesTracker _favoritesTracker = null!;
+    [Inject] protected readonly IEmoterInputService _emoterInputService = null!;
     [Inject] protected readonly ISpriteSourceBuilder _spriteSourceBuilder = null!;
     [Inject(Id = EmoterImage.Pool.Id)] protected readonly EmoterImage.Pool _imageMemoryPool = null!;
+    [Inject, UIValue("selected-emote-context")] protected readonly SelectedEmoteContext _selectedEmoteContext = null!;
 
-    [UIComponent("grid")] private readonly RectTransform _grid = null!;
+    #region BSML
+
     [UIValue("hide-content")] protected bool HideContent => !_showContent;
     [UIValue("hide-category-list")] protected bool HideCategoryList => !_showCategoryList;
-    [UIValue("categories")] protected List<object> Categories = new() { new EmoteCategory() };
 
+    [UIComponent("grid")] protected readonly RectTransform _grid = null!;
+    [UIValue("categories")] protected List<object> Categories = new() { new EmoteCategory() };
 
     [UIValue("show-content")]
     protected bool ShowContent
@@ -80,7 +90,6 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
         }
     }
 
-
     [UIValue("grid-y")]
     protected float GridY
     {
@@ -91,6 +100,31 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
             NotifyPropertyChanged(nameof(GridY));
         }
     }
+
+    [UIValue("duration")]
+    protected float Duration
+    {
+        get => _config.Duration;
+        set
+        {
+            _config.Duration = value;
+            NotifyPropertyChanged(nameof(Duration));
+        }
+    }
+
+    [UIValue("distance")]
+    protected float Distance
+    {
+        get => _config.Distance;
+        set
+        {
+            _config.Distance = value;
+            NotifyPropertyChanged(nameof(Distance));
+        }
+    }
+
+
+    #endregion
 
     [UIAction("#post-parse")]
     protected void Parsed()
@@ -110,11 +144,33 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
         _imagePoolContainer = new(_imageMemoryPool);
     }
 
+
+    private void Image_EmoteClicked(EmoterImage _, Emote emote)
+    {
+        if (_emoterInputService.IsHoldingDownAlternateAction)
+        {
+            _selectedEmoteContext.SetData(emote);
+            _selectedEmoteContext.Show();
+        }
+        else
+        {
+            _emoteDispatcher.Dispatch(emote);
+        }
+    }
+
     protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
     {
         base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
         ShowCategoryList = false;
         ShowContent = false;
+
+        _favoritesTracker.FavoritesChanged += FavoritesTracker_FavoritesChanged;
+    }
+
+    private void FavoritesTracker_FavoritesChanged()
+    {
+        if (_selectedCategory != null && _selectedCategory.Id == Plugin.FavoritesCategoryId)
+            Task.Run(() => LoadCategoryInfo(_selectedCategory));
     }
 
     protected void Update()
@@ -219,15 +275,12 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
         });
     }
 
-    private void Image_EmoteClicked(EmoterImage _, Emote emote)
-    {
-        _emoteDispatcher.Dispatch(emote);
-    }
-
     protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
     {
-        ShowContent = true;
-        ShowCategoryList = true;
+        _favoritesTracker.FavoritesChanged -= FavoritesTracker_FavoritesChanged;
+
+        ShowContent = false;
+        ShowCategoryList = false;
         base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
     }
 }

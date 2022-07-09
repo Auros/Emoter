@@ -27,7 +27,7 @@ internal class EmoterImage : ClickableImage
     {
         base.Awake();
         material = RoundEdgeMaterial;
-        sprite = Utilities.ImageResources.BlankSprite;
+        sprite = BeatSaberMarkupLanguage.Utilities.ImageResources.BlankSprite;
         _layoutElement = GetOrAddComponent<LayoutElement>();
         _layoutElement.preferredHeight = _imageSize;
         _layoutElement.preferredWidth = _imageSize;

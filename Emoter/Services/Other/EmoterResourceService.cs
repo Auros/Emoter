@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
-namespace Emoter.Services;
+namespace Emoter.Services.Other;
 
 internal interface IEmoterResourceService
 {
@@ -75,6 +75,6 @@ internal class EmoterResourceService : IEmoterResourceService, ILateDisposable
         _shader = null;
         _isLoading = false;
         _assetBundle.Unload(true);
-        
+
     }
 }

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Emoter.Services;
+namespace Emoter.Services.Sprites;
 
 /// <summary>
 /// Supports loading from our assembly and the internet.
@@ -22,6 +21,7 @@ internal class CachedSpriteSourceBuilder : ISpriteSourceBuilder
     {
         if (_cache.TryGetValue(source, out var sprite))
             return sprite;
+
 
         if (source.StartsWith(nameof(Emoter)))
             sprite = await _assemblySpriteSourceBuilder.BuildSpriteAsync(source);

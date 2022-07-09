@@ -1,6 +1,8 @@
 ﻿using Emoter.Components;
 using Emoter.Daemons;
 using Emoter.Services;
+using Emoter.Services.Other;
+using Emoter.Services.Online;
 using Emoter.UI.Main.Controllers;
 using UnityEngine;
 using Zenject;
@@ -14,6 +16,7 @@ internal class EmoterMenuInstaller : Installer
     public override void InstallBindings()
     {
         Container.BindInterfacesTo<EmoteScreenDaemon>().AsSingle();
+        Container.BindInterfacesTo<EmotePacketReceiver>().AsSingle();
         Container.Bind<QuickEmoteViewController>().FromNewComponentAsViewController().AsSingle();
 
         Container.BindMemoryPool<EmoterImage, EmoterImage.Pool>().WithId(EmoterImage.Pool.Id).WithInitialSize(0).FromMethod(FactoryMethod);
@@ -22,7 +25,7 @@ internal class EmoterMenuInstaller : Installer
         bool useLocal = true;
         if (useLocal)
         {
-            Container.Bind<IEmoteDispatcher>().To<LocalEmoteDispatcher>().AsSingle();
+            Container.Bind<IEmoteDispatcher>().To<OnlineEmoteDispatcher>().AsSingle();
             Container.Bind<IEmoteDisplayService>().To<BasicEmoteDisplayService>().AsSingle();
         }
         else

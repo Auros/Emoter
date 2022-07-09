@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
-namespace Emoter.Services;
+namespace Emoter.Services.Sprites;
 
 internal interface IEmoteErrorSpriteService
 {
@@ -30,7 +30,7 @@ internal class EmoteErrorSpriteService : IEmoteErrorSpriteService, ILateDisposab
 
         void LoadSprite()
         {
-            var tex = Utilities.FindTextureInAssembly(GetErrorPath(type));
+            var tex = BeatSaberMarkupLanguage.Utilities.FindTextureInAssembly(GetErrorPath(type));
             sprite = Sprite.Create(tex, new(0f, 0f, tex.width, tex.height), Vector2.zero, 100f, 0, SpriteMeshType.FullRect);
             tex.wrapMode = TextureWrapMode.Clamp;
             _errorSprites[type] = sprite;

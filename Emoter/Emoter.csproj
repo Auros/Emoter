@@ -13,6 +13,7 @@
 		<AssemblyName>Emoter</AssemblyName>
 		<RootNamespace>Emoter</RootNamespace>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <BSMTProjectType>BSIPA</BSMTProjectType>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -59,6 +60,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Reference Include="BGNet">
+		  <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\BGNet.dll</HintPath>
+		</Reference>
 		<Reference Include="BSML">
 		  <HintPath>$(BeatSaberDir)\Plugins\BSML.dll</HintPath>
 		</Reference>
@@ -73,6 +77,9 @@
 		<Reference Include="HMRendering">
 			<HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\HMRendering.dll</HintPath>
 			<Private>False</Private>
+		</Reference>
+		<Reference Include="LiteNetLib">
+		  <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\LiteNetLib.dll</HintPath>
 		</Reference>
 		<Reference Include="MultiplayerCore">
 		  <HintPath>$(BeatSaberDir)\Plugins\MultiplayerCore.dll</HintPath>
@@ -107,6 +114,12 @@
 		<Reference Include="UnityEngine.AudioModule">
 			<HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
 			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.InputLegacyModule">
+		  <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+		</Reference>
+		<Reference Include="UnityEngine.PhysicsModule">
+		  <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
 		</Reference>
 		<Reference Include="UnityEngine.UI">
 			<HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.UI.dll</HintPath>

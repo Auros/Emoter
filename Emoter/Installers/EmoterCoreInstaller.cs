@@ -1,4 +1,7 @@
-﻿using Emoter.Services;
+﻿using Emoter.Daemons;
+using Emoter.Services.Other;
+using Emoter.Services.Offline;
+using Emoter.Services.Sprites;
 using Zenject;
 
 namespace Emoter.Installers;
@@ -9,6 +12,7 @@ internal class EmoterCoreInstaller : Installer
     {
         bool useCachedService = true;
 
+        Container.BindInterfacesTo<EmoterInputService>().AsSingle();
         Container.BindInterfacesTo<OfflineEmoteService>().AsSingle();
         Container.BindInterfacesTo<EmoterResourceService>().AsSingle();
         Container.BindInterfacesTo<EmoteErrorSpriteService>().AsSingle();

@@ -1,5 +1,4 @@
-﻿using BeatSaberMarkupLanguage;
-using Emoter.Models;
+﻿using Emoter.Models;
 using IPA.Loader;
 using IPA.Utilities.Async;
 using SiraUtil.Zenject;
@@ -10,14 +9,14 @@ using System.Threading.Tasks;
 using UnityEngine;
 using Zenject;
 
-namespace Emoter.Services;
+namespace Emoter.Services.Sprites;
 
 internal class AssemblySpriteSourceBuilder : ISpriteSourceBuilder, ILateDisposable
 {
     private readonly Assembly _assembly;
     private readonly IEmoteErrorSpriteService _emoteErrorSpriteService;
 
-    private readonly List<Sprite> _spritesMade = new(); 
+    private readonly List<Sprite> _spritesMade = new();
 
     public AssemblySpriteSourceBuilder(UBinder<Plugin, PluginMetadata> metadataBinder, IEmoteErrorSpriteService emoteErrorSpriteService)
     {
@@ -27,6 +26,9 @@ internal class AssemblySpriteSourceBuilder : ISpriteSourceBuilder, ILateDisposab
 
     public async Task<Sprite> BuildSpriteAsync(string source)
     {
+        if (source == Emote.Empty.Source)
+            return await _emoteErrorSpriteService.GetErrorSpriteAsync(EmoteError.NotFound);
+
         byte[]? bytes = null;
         try
         {
@@ -52,7 +54,7 @@ internal class AssemblySpriteSourceBuilder : ISpriteSourceBuilder, ILateDisposab
         {
             try
             {
-                var tex = Utilities.LoadTextureRaw(bytes);
+                var tex = BeatSaberMarkupLanguage.Utilities.LoadTextureRaw(bytes);
                 tex.wrapMode = TextureWrapMode.Clamp;
                 var sprite = Sprite.Create(tex, new(0f, 0f, tex.width, tex.height), Vector2.zero, 100f, 0, SpriteMeshType.FullRect);
                 tex.name = source;
