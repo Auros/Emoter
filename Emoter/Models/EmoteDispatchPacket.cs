@@ -37,5 +37,11 @@ internal class EmoteDispatchPacket : MpPacket
         
         Distance = reader.GetFloat();
         Time = reader.GetFloat();
+
+        if (Distance > 10 || Distance < 0)
+            Distance = 2.5f;
+
+        if (Time > 5 || Time < 0)
+            Time = 4f;
     }
 }

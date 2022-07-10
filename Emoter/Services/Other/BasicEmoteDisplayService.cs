@@ -1,7 +1,6 @@
 ﻿using Emoter.Components;
 using Emoter.Models;
 using IPA.Utilities.Async;
-using System;
 using System.Threading.Tasks;
 using Tweening;
 using UnityEngine;
@@ -46,13 +45,16 @@ internal class BasicEmoteDisplayService : IEmoteDisplayService
             Vector3 endPos;
             var originalPos = options.position;
             cube.transform.localPosition = originalPos;
-            endPos = cube.transform.localPosition + (options.direction ?? Vector3.forward) * options.distance;
+
+            endPos = cube.transform.localPosition + (options.direction ?? Vector3.forward) * options.distance + new Vector3(0f, 4f, 0f);
 
             var tween = _tweeningManager.AddTween(new FloatTween(0f, 1f, v =>
             {
                 var lerped = Vector3.Lerp(originalPos, endPos, v);
-                cube.transform.localPosition = Vector3.Lerp(originalPos, endPos, v);
+                lerped = new Vector3(lerped.x, Mathf.Lerp(originalPos.y, endPos.y, Easing.InQuint(v)), lerped.z);
+                cube.transform.localPosition = lerped;
                 cube.transform.localScale = Vector3.one * (1f - v);
+
             }, options.duration, EaseType.OutSine), cube);
             tween.onCompleted += () =>
             {

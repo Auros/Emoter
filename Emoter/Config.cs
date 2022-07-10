@@ -16,8 +16,9 @@ internal class Config
     [NonNullable, UseConverter(typeof(VersionConverter))]
     public virtual Version Version { get; set; } = null!;
 
-    public virtual float Duration { get; set; } = 3f;
-    public virtual float Distance { get; set; } = 5f;
+    public virtual float Duration { get; set; } = 4f;
+    public virtual float Distance { get; set; } = 2.5f;
+    public virtual float MaximumEmoteRatePerPlayer { get; set; } = 0.5f;
 
     [UseConverter(typeof(ListConverter<Guid, GuidConverter>))]
     public virtual List<Guid> Favorites { get; set; } = new();
