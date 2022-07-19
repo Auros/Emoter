@@ -2,6 +2,7 @@
 using Emoter.Services;
 using IPA.Utilities;
 using MultiplayerCore.Networking;
+using MultiplayerCore.Players;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,8 @@ internal class EmotePacketReceiver : IInitializable, IDisposable
     private readonly Config _config;
     private readonly SiraLog _siraLog;
     private readonly IEmoteService _emoteService;
+    private readonly MpPlayerManager _mpPlayerManager;
+    private readonly IPlayerValidator _playerValidator;
     private readonly MpPacketSerializer _mpPacketSerializer;
     private readonly IEmoteDisplayService _emoteDisplayService;
     private readonly Dictionary<string, Transform> _playerHeadMap = new();
@@ -23,11 +26,13 @@ internal class EmotePacketReceiver : IInitializable, IDisposable
     private readonly FieldAccessor<AvatarPoseController, Transform>.Accessor HeadAccessor = FieldAccessor<AvatarPoseController, Transform>.GetAccessor("_headTransform");
     private readonly FieldAccessor<MultiplayerLobbyAvatarManager, Dictionary<string, MultiplayerLobbyAvatarController>>.Accessor PlayerAvatarMapAccessor = FieldAccessor<MultiplayerLobbyAvatarManager, Dictionary<string, MultiplayerLobbyAvatarController>>.GetAccessor("_playerIdToAvatarMap");
 
-    public EmotePacketReceiver(Config config, SiraLog siraLog, IEmoteService emoteService, MpPacketSerializer mpPacketSerializer, IEmoteDisplayService emoteDisplayService, MultiplayerLobbyAvatarManager multiplayerLobbyAvatarManager)
+    public EmotePacketReceiver(Config config, SiraLog siraLog, IEmoteService emoteService, MpPlayerManager mpPlayerManager, IPlayerValidator playerValidator, MpPacketSerializer mpPacketSerializer, IEmoteDisplayService emoteDisplayService, MultiplayerLobbyAvatarManager multiplayerLobbyAvatarManager)
     {
         _config = config;
         _siraLog = siraLog;
         _emoteService = emoteService;
+        _mpPlayerManager = mpPlayerManager;
+        _playerValidator = playerValidator;
         _mpPacketSerializer = mpPacketSerializer;
         _emoteDisplayService = emoteDisplayService;
         _playerAvatarMap = PlayerAvatarMapAccessor(ref multiplayerLobbyAvatarManager);
@@ -50,7 +55,6 @@ internal class EmotePacketReceiver : IInitializable, IDisposable
             _lastEmotesReceived[connectedPlayer.userId] = Time.time;
         }    
         
-        
         var head = GetPlayerHead(connectedPlayer);
 
         var emote = await _emoteService.GetEmoteAsync(packet.EmoteId);
@@ -58,6 +62,12 @@ internal class EmotePacketReceiver : IInitializable, IDisposable
         {
             _siraLog.Error($"Could not find emote with the Id '{packet.EmoteId}'");
             emote = Emote.Empty;
+        }
+        else if (_mpPlayerManager.TryGetPlayer(connectedPlayer.userId, out var player))
+        {
+            var platformId = player.PlatformId;
+            if (!await _playerValidator.ValidateAsync(emote, platformId))            
+                emote.Source = "Emoter.Resources.InvalidPermissions.png";
         }
 
         _emoteDisplayService.Spawn(emote, new EmoteDisplayOptions(packet.Time, packet.Distance, head.position + head.forward * 0.2f, head.forward * 0.2f)); // Move the emote spawnpoint 0.2m in front of the head

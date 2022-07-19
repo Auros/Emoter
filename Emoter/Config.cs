@@ -23,7 +23,7 @@ internal class Config
     [UseConverter(typeof(ListConverter<Guid, GuidConverter>))]
     public virtual List<Guid> Favorites { get; set; } = new();
 
-    public virtual string OnlineEmoteRepositoryAPI { get; set; } = "https://localhost:3000/api";
+    public virtual string OnlineEmoteRepositoryAPI { get; set; } = "https://emote-core.auros.dev/api";
 
     public virtual void Changed() { }
 }

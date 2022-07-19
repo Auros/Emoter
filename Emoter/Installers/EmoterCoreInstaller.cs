@@ -21,10 +21,12 @@ internal class EmoterCoreInstaller : Installer
         {
             Container.Bind<OfflineEmoteService>().AsSingle();
             Container.BindInterfacesTo<CachedOnlineEmoteService>().AsSingle();
+            Container.BindInterfacesTo<OnlineEmotePlayerValidator>().AsSingle();
         }
         else
         {
             Container.BindInterfacesTo<OfflineEmoteService>().AsSingle();
+            Container.BindInterfacesTo<AlwaysValidPlayerValidator>().AsSingle();
         }
 
         if (useCachedService)
