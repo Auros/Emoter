@@ -6,10 +6,11 @@ using IPALogger = IPA.Logging.Logger;
 using Conf = IPA.Config.Config;
 using IPA.Config.Stores;
 using IPA.Loader;
+using SiraUtil.Attributes;
 
 namespace Emoter;
 
-[NoEnableDisable, Plugin(RuntimeOptions.DynamicInit)]
+[Slog, NoEnableDisable, Plugin(RuntimeOptions.DynamicInit)]
 public class Plugin
 {
     public static readonly Guid FavoritesCategoryId = Guid.Parse("2cc144dd-c606-4aef-b9ce-09958abc7e7b");
@@ -21,6 +22,7 @@ public class Plugin
         config.Version = pluginMetadata.HVersion;
 
         zenjector.UseAutoBinder();
+        zenjector.UseHttpService();
         zenjector.UseLogger(logger);
         zenjector.UseMetadataBinder<Plugin>();
         zenjector.Install<EmoterCoreInstaller>(Location.App);

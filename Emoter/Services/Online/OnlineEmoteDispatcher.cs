@@ -25,7 +25,6 @@ internal class OnlineEmoteDispatcher : IEmoteDispatcher
 
     public void Dispatch(Emote emote)
     {
-
         if (_config.MaximumEmoteRatePerPlayer != default)
         {
             if (_lastDispatched + _config.MaximumEmoteRatePerPlayer > Time.time)

@@ -14,6 +14,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -244,15 +245,27 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
         });
 
         ConcurrentBag<(Emote, Sprite)> loadedBag = new();
-        var assembly = Assembly.GetExecutingAssembly();
-        var result = Parallel.ForEach(category.Emotes, async emote =>
+
+        // https://stackoverflow.com/a/56860378
+        var cd2 = Environment.ProcessorCount / 2;
+        var max = cd2 > 4 ? cd2 : 4;
+
+        using SemaphoreSlim semaphore = new(initialCount: max);
+        var tasks = category.Emotes.Select(async emote =>
         {
-            var sprite = await _spriteSourceBuilder.BuildSpriteAsync(emote.Source);
-            loadedBag.Add((emote, sprite));
+            await semaphore.WaitAsync();
+            try
+            {
+                var sprite = await _spriteSourceBuilder.BuildSpriteAsync(emote.Source);
+                loadedBag.Add((emote, sprite));
+            }
+            finally
+            {
+                semaphore.Release();
+            }
         });
 
-        while (!result.IsCompleted)
-            await Task.Yield();
+        await Task.WhenAll(tasks);
 
         await UnityMainThreadTaskScheduler.Factory.StartNew(() =>
         {

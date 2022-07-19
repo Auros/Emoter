@@ -18,10 +18,12 @@ internal class Config
 
     public virtual float Duration { get; set; } = 4f;
     public virtual float Distance { get; set; } = 2.5f;
-    public virtual float MaximumEmoteRatePerPlayer { get; set; } = 0.5f;
+    public virtual float MaximumEmoteRatePerPlayer { get; set; } = 0.3f;
 
     [UseConverter(typeof(ListConverter<Guid, GuidConverter>))]
     public virtual List<Guid> Favorites { get; set; } = new();
+
+    public virtual string OnlineEmoteRepositoryAPI { get; set; } = "https://localhost:3000/api";
 
     public virtual void Changed() { }
 }

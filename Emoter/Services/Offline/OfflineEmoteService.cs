@@ -14,6 +14,7 @@ internal class OfflineEmoteService : IEmoteService, IFavoritesTracker
     private readonly List<Emote> _favorites = new();
 
     private readonly EmoteCategory _favoritesCategory;
+    public EmoteCategory FavoritesCategory => _favoritesCategory;
 
     public OfflineEmoteService(Config config)
     {
