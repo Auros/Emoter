@@ -3,9 +3,9 @@
   "id": "Emoter",
   "name": "Emoter",
   "author": "Auros",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "#![Emoter.Resources.DESCRIPTION.md]",
-  "gameVersion": "1.23.0",
+  "gameVersion": "1.24.0",
   "dependsOn": {
     "BSIPA": "^4.2.1",
     "SiraUtil": "^3.0.0"
