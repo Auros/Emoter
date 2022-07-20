@@ -16,6 +16,7 @@ internal class OfflineEmoteStore
         Emotes = new()
         {
             BuildEmoteFromResource(Guid.Parse("08e19260-eeff-464b-9797-4ffdcac5a939"), nameof(Unicode), "Grinning"),
+            BuildEmoteFromResource(Guid.Parse("b2d95242-db77-3325-b9f5-91e0d99bb3e3"), nameof(Unicode), "Split82"),
             BuildEmoteFromResource(Guid.Parse("484da46d-53b7-4f12-a4e8-9bcca20752be"), nameof(Unicode), "Frowning"),
             BuildEmoteFromResource(Guid.Parse("59bfbc23-ab00-41eb-9b8e-157826e5e465"), nameof(Unicode), "Joy"),
             BuildEmoteFromResource(Guid.Parse("b9bf5556-84da-4fd6-9b69-756b9f1fc68f"), nameof(Unicode), "Face With Hearts"),
@@ -28,6 +29,8 @@ internal class OfflineEmoteStore
             BuildEmoteFromResource(Guid.Parse("e92ab98c-5a47-40aa-abe7-6e5716df3051"), nameof(Unicode), "Circle"),
             BuildEmoteFromResource(Guid.Parse("570ec09e-b8b1-4163-8f71-692001bbb036"), nameof(Unicode), "Cross"),
             BuildEmoteFromResource(Guid.Parse("cd02de89-3714-4c27-882c-7bfbb2e19c84"), nameof(Unicode), "Heart"),
+            BuildEmoteFromResource(Guid.Parse("88a61a76-1ee1-4f18-9883-bfbd6dac87f2"), nameof(Unicode), "Thumbs Up"),
+            BuildEmoteFromResource(Guid.Parse("d2651a77-5256-46a4-a246-280cb2013781"), nameof(Unicode), "Thumbs Down"),
         }
     };
 

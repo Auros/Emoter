@@ -53,6 +53,9 @@
 	  <None Remove="Resources\Emotes\Unicode\Joy.png" />
 	  <None Remove="Resources\Emotes\Unicode\Neutral.png" />
 	  <None Remove="Resources\Emotes\Unicode\Skull.png" />
+	  <None Remove="Resources\Emotes\Unicode\Split82.png" />
+	  <None Remove="Resources\Emotes\Unicode\ThumbsDown.png" />
+	  <None Remove="Resources\Emotes\Unicode\ThumbsUp.png" />
 	  <None Remove="Resources\Errors\InvalidPermissions.png" />
 	  <None Remove="Resources\Errors\LoadingFailed.png" />
 	  <None Remove="Resources\Errors\NotFound.png" />
@@ -191,6 +194,9 @@
 		<EmbeddedResource Include="Resources\Emotes\Unicode\Joy.png" />
 		<EmbeddedResource Include="Resources\Emotes\Unicode\Neutral.png" />
 		<EmbeddedResource Include="Resources\Emotes\Unicode\Skull.png" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\Split82.png" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\ThumbsDown.png" />
+		<EmbeddedResource Include="Resources\Emotes\Unicode\ThumbsUp.png" />
 		<EmbeddedResource Include="Resources\Errors\InvalidPermissions.png" />
 		<EmbeddedResource Include="Resources\Errors\LoadingFailed.png" />
 		<EmbeddedResource Include="Resources\Errors\NotFound.png" />

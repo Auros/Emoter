@@ -77,7 +77,6 @@ internal class EmoteScreenDaemon : IInitializable, ITickable, IDisposable
 
         emoterScreen.layer = 5;
 
-        _emoterContainer.transform.localPosition = new Vector3(0.2f, 0.2f, 0.1f);
         canvas.renderMode = RenderMode.WorldSpace;
         canvas.sortingOrder = 5000;
 
@@ -135,11 +134,7 @@ internal class EmoteScreenDaemon : IInitializable, ITickable, IDisposable
             _emoterContainer.SetActive(true);
             _timeTweeningManager.AddTween(new FloatTween(0f, 1f, o => _emoterCanvasGroup.alpha = o, 0.5f, EaseType.OutCirc), _emoterCanvasGroup);
 
-            _emoterContainer.transform.SetParent(_menuControllerAccessor.LeftController.transform);
-            _emoterContainer.transform.localPosition = new Vector3(0.2f, 0.2f, 0.1f);
-            _emoterContainer.transform.localScale = new(.0075f, .0075f, .0075f);
-            _emoterContainer.transform.localRotation = Quaternion.identity;
-
+            SetTransforms();
         }
         else
         {
@@ -156,5 +151,23 @@ internal class EmoteScreenDaemon : IInitializable, ITickable, IDisposable
     private bool IsHoldingTrigger()
     {
         return _fpfcSettings.Enabled ? Input.GetKey(KeyCode.L) : _menuControllerAccessor.LeftController.triggerValue > 0.9f;
+    }
+
+    private void SetTransforms()
+    {
+        if (_fpfcSettings.Enabled)
+        {
+            _emoterContainer.transform.SetParent(null);
+            _emoterContainer.transform.localPosition = new Vector3(0f, 1.2f, 1.5f);
+            _emoterContainer.transform.localScale = new(.02f, .02f, .02f);
+            _emoterContainer.transform.localRotation = Quaternion.identity;
+        }
+        else
+        {
+            _emoterContainer.transform.SetParent(_menuControllerAccessor.LeftController.transform);
+            _emoterContainer.transform.localPosition = new Vector3(0.2f, 0.2f, 0.1f);
+            _emoterContainer.transform.localScale = new(.0075f, .0075f, .0075f);
+            _emoterContainer.transform.localRotation = Quaternion.identity;
+        }
     }
 }

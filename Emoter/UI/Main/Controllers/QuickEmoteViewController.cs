@@ -5,6 +5,7 @@ using Emoter.Models;
 using Emoter.Services;
 using Emoter.Services.Other;
 using Emoter.UI.Main.Contexts;
+using HMUI;
 using IPA.Utilities;
 using IPA.Utilities.Async;
 using SiraUtil.Logging;
@@ -53,6 +54,7 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
     [UIValue("hide-category-list")] protected bool HideCategoryList => !_showCategoryList;
 
     [UIComponent("grid")] protected readonly RectTransform _grid = null!;
+    [UIComponent("scroll-view")] protected readonly ScrollView _scrollView = null!;
     [UIValue("categories")] protected List<object> Categories = new() { new EmoteCategory() };
 
     [UIValue("show-content")]
@@ -195,7 +197,7 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
 
     protected void Update()
     {
-        if (SelectedCategory is not null && SelectedCategory.Emotes.Count > 0)
+        if (SelectedCategory is not null && SelectedCategory.Emotes.Count > 16)
         {
             var emoteCount = SelectedCategory.Emotes.Count;
             var size = (4 - (emoteCount % 4) + emoteCount) / 4 * 8.25f;
@@ -304,6 +306,7 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
                 image.EmoteClicked += Image_EmoteClicked;
             }
             ShowContent = true;
+            _scrollView.ScrollTo(0, false);
         });
     }
 

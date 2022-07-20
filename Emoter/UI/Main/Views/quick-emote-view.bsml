@@ -9,9 +9,8 @@
     <loading active="~hide-category-list" preserve-aspect="true" />
   </vertical>
   <vertical active="~show-content" horizontal-fit="PreferredSize" vertical-fit="Unconstrained" pref-width="50" pref-height="42">
-    <scroll-view size-delta-x="50">
-      <grid id="grid" cell-size-x="8" cell-size-y="8" child-align="UpperLeft" spacing-x="0.5" spacing-y="0.5" size-delta-y="~grid-y">
-      </grid>
+    <scroll-view id="scroll-view" size-delta-x="50">
+      <grid id="grid" cell-size-x="8" cell-size-y="8" child-align="UpperLeft" spacing-x="0.5" spacing-y="0.5" size-delta-y="~grid-y" />
     </scroll-view>
   </vertical>
   <horizontal active="~hide-content" horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="46" pref-height="40">
@@ -19,8 +18,8 @@
       <loading pref-width="15" pref-height="15" preserve-aspect="true" />
     </horizontal>
   </horizontal>
-  <vertical ignore-layout="true" pref-width="6" pref-height="6" anchor-pos-x="21" anchor-pos-y="20">
-    <clickable-image src="#OptionsButton" preserve-aspect="true" click-event="show-settings" />
+  <vertical ignore-layout="true" pref-width="6" pref-height="6" anchor-pos-x="21" anchor-pos-y="20" size-delta-x="6" size-delta-y="6" horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
+    <clickable-image src="#OptionsButton" preserve-aspect="true" click-event="show-settings" pref-width="6" pref-height="6" size-delta-x="6" size-delta-y="6" />
   </vertical>
 
   <modal clickerino-offerino-closerino="true" size-delta-x="40" size-delta-y="35" show-event="show-settings" hide-event="hide-settings">
@@ -47,5 +46,9 @@
       </vertical>
     </modal>
   </macro.as-host>
+
+  <vertical ignore-layout="true" anchor-pos-y="-44">
+    <text text="Hold Left Trigger To Close" font-size="3" face-color="#ffffff55" italics="true" />
+  </vertical>
 
 </vertical>
