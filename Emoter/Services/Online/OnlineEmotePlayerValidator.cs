@@ -34,7 +34,9 @@ internal class OnlineEmotePlayerValidator : IPlayerValidator
             if (validation.Id == platformId && validation.Permission)
                 permission = true;
 
-        _permissionCache.Add(permissionUrl, permission);
+        if (!_permissionCache.ContainsKey(permissionUrl))
+            _permissionCache.Add(permissionUrl, permission);
+
         return permission;
     }
 

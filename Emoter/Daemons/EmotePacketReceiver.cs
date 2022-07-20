@@ -70,7 +70,7 @@ internal class EmotePacketReceiver : IInitializable, IDisposable
                 emote.Source = "Emoter.Resources.Errors.InvalidPermissions.png";
         }
 
-        _emoteDisplayService.Spawn(emote, new EmoteDisplayOptions(packet.Time, packet.Distance, head.position + head.forward * 0.2f, head.forward * 0.2f)); // Move the emote spawnpoint 0.2m in front of the head
+        _emoteDisplayService.Spawn(emote, new EmoteDisplayOptions(packet.Time, packet.Distance, head.position + head.forward * 0.5f, head.forward)); // Move the emote spawnpoint 0.5m in front of the head
     }
 
     public void Dispose()

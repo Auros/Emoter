@@ -26,6 +26,7 @@ internal class EmoteScreenDaemon : IInitializable, ITickable, IDisposable
 
     private GameObject _emoterContainer = null!;
     private CanvasGroup _emoterCanvasGroup = null!;
+    private Screen _emoterScreen = null!;
 
     private bool _multiLobbyState;
     private float _holdValue;
@@ -59,6 +60,7 @@ internal class EmoteScreenDaemon : IInitializable, ITickable, IDisposable
         var canvasScaler = emoterScreen.AddComponent<CanvasScaler>();
         var rectTransform = emoterScreen.GetComponent<RectTransform>();
         _emoterCanvasGroup = emoterScreen.AddComponent<CanvasGroup>();
+        _emoterScreen = screen;
 
         curvedCanvasSettings.SetRadius(80f);
 
@@ -71,7 +73,7 @@ internal class EmoteScreenDaemon : IInitializable, ITickable, IDisposable
         canvas.additionalShaderChannels |= AdditionalCanvasShaderChannels.Tangent;
         canvas.additionalShaderChannels |= AdditionalCanvasShaderChannels.Normal;
 
-        screen.SetRootViewController(_quickEmoteViewController, ViewController.AnimationType.None);
+        //screen.SetRootViewController(_quickEmoteViewController, ViewController.AnimationType.None);
 
         rectTransform.sizeDelta = new Vector2(48f, 48f);
 
@@ -155,6 +157,9 @@ internal class EmoteScreenDaemon : IInitializable, ITickable, IDisposable
 
     private void SetTransforms()
     {
+        if (!_quickEmoteViewController.isInViewControllerHierarchy)
+            _emoterScreen.SetRootViewController(_quickEmoteViewController, ViewController.AnimationType.None);
+
         if (_fpfcSettings.Enabled)
         {
             _emoterContainer.transform.SetParent(null);

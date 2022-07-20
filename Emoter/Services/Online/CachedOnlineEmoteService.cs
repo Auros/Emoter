@@ -50,18 +50,30 @@ internal class CachedOnlineEmoteService : IEmoteService, IFavoritesTracker
         if (_cachedCategories is not null)
             return _cachedCategories;
 
+        _siraLog.Debug("Loading offline categories");
         // Load the offline emotes, as we want to include them in the categories list.
         var offlines = await _offlineEmoteService.GetCategoriesAsync();
+        _siraLog.Debug("Loaded offline categories");
 
-        // Hit the API for the verified categories.
-        var verifiedCategoriesUrl = $"{_config.OnlineEmoteRepositoryAPI}/v1/categories/verified";
-        var verifiedCategoriesResponse = await _httpService.GetAsync(verifiedCategoriesUrl);
-        if (!verifiedCategoriesResponse.Successful)
+        IHttpResponse verifiedCategoriesResponse = null!;
+        try
         {
-            _siraLog.Error($"Unable to get the verified categories list from '{verifiedCategoriesUrl}'");
-            return offlines;
+            // Hit the API for the verified categories.
+            _siraLog.Debug("Fetching online categories");
+            var verifiedCategoriesUrl = $"{_config.OnlineEmoteRepositoryAPI}/v1/categories/verified";
+            verifiedCategoriesResponse = await _httpService.GetAsync(verifiedCategoriesUrl);
+            if (!verifiedCategoriesResponse.Successful)
+            {
+                _siraLog.Error($"Unable to get the verified categories list from '{verifiedCategoriesUrl}'");
+                return offlines;
+            }
+        }
+        catch (Exception e)
+        {
+            _siraLog.Error(e);
         }
 
+        _siraLog.Debug("Getting user info");
         var userInfo = await _platformUserModel.GetUserInfo();
 
         bool addedRemaining = false;
@@ -69,6 +81,7 @@ internal class CachedOnlineEmoteService : IEmoteService, IFavoritesTracker
 
         if (offlines.Count > 0 && offlines[0].Id == Plugin.FavoritesCategoryId)
         {
+            _siraLog.Debug("Shifting favorites category to the front");
             // Make sure the favorites category is first.
             categories.Add(offlines[0]);
         }
@@ -79,6 +92,7 @@ internal class CachedOnlineEmoteService : IEmoteService, IFavoritesTracker
         }
 
         // Hit the API to see if the current user has uploaded any emotes.
+        _siraLog.Debug($"Attempting to fetch unique emotes for {userInfo.userName} ({userInfo.platformUserId})");
         var specificUserCategoryUrl = $"{_config.OnlineEmoteRepositoryAPI}/v1/categories/from-platform-user/{userInfo.platformUserId}";
         var specificUserCategoryResponse = await _httpService.GetAsync(specificUserCategoryUrl);
         if (specificUserCategoryResponse.Successful)
@@ -152,14 +166,18 @@ internal class CachedOnlineEmoteService : IEmoteService, IFavoritesTracker
     {
         if (!_loadedFavorites)
         {
+            _siraLog.Debug("Loading favorites (Start)");
             _loadedFavorites = true;
+            _siraLog.Debug("Offline Favorites (Pre)");
             _ = await _offlineEmoteService.GetFavoritesAsync();
+            _siraLog.Debug("Offline Favorites (Post)");
             foreach (var emote in _cachedEmotes)
             {
                 if (!_config.Favorites.Contains(emote.Id) || _offlineEmoteService.FavoritesCategory.Emotes.Contains(emote))
                     continue;
                 _offlineEmoteService.FavoritesCategory.Emotes.Add(emote);
             }
+            _siraLog.Debug("Added offline emotes to cache");
         }
         return _offlineEmoteService.FavoritesCategory.Emotes;
     }

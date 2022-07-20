@@ -209,21 +209,28 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
 
     private async Task LoadCategories()
     {
+        _siraLog.Debug("Loading categories");
         var categories = await _emoteService.GetCategoriesAsync();
         Categories.Clear();
         for (int i = 0; i < categories.Count; i++)
             Categories.Add(categories[i]);
+        _siraLog.Debug("Loaded categories");
 
         await UnityMainThreadTaskScheduler.Factory.StartNew(() =>
         {
+            _siraLog.Debug($"ShowCategoryList = {categories.Count == 0}");
             ShowCategoryList = categories.Count == 0;
         });
 
         if (categories.Count == 0)
+        {
+            _siraLog.Debug("Could not find any categories. Bailing out");
             return;
+        }    
 
         if (_lastSelectedCategory.HasValue)
         {
+            _siraLog.Debug($"Matching loaded categories to the last selected category (Index: {_lastSelectedCategory.Value})");
             var lastCategory = categories.FirstOrDefault(c => c.Id == _lastSelectedCategory.Value);
             if (lastCategory == null)
             {
@@ -239,6 +246,7 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
         }
 
         var category = categories[_lastSelectedPage];
+        _siraLog.Debug($"Applying selected category: {category.Name}");
 
         // If somoene doesn't have any favorites, we chose the next category over.
         if (category.Emotes.Count == 0 && category.Id == Plugin.FavoritesCategoryId && categories.Count >= 2)
@@ -246,6 +254,7 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
 
         await UnityMainThreadTaskScheduler.Factory.StartNew(() =>
         {
+            _siraLog.Debug("Showing category list and setting selected category");
             ShowCategoryList = true;
             SelectedCategory = category;
         });
@@ -253,6 +262,7 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
 
     private async Task LoadCategoryInfo(EmoteCategory category)
     {
+        _siraLog.Debug($"Loading category emotes for {category.Name} ({category.Id})");
         await UnityMainThreadTaskScheduler.Factory.StartNew(() =>
         {
             if (_imagePoolContainer != null)
@@ -268,32 +278,55 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
         ConcurrentBag<(Emote, Sprite)> loadedBag = new();
 
         // https://stackoverflow.com/a/56860378
-        var cd2 = Environment.ProcessorCount / 2;
-        var max = cd2 > 4 ? cd2 : 4;
+        //var cd2 = Environment.ProcessorCount / 2;
+        //var max = cd2 > 4 ? cd2 : 4;
 
-        using SemaphoreSlim semaphore = new(initialCount: max);
-        var tasks = category.Emotes.Select(async emote =>
+        //_siraLog.Debug($"Using a maximum of {2} threads to build image streams");
+        //using SemaphoreSlim semaphore = new(initialCount: 2);
+
+        /*async Task Runner(Emote emote)
         {
+            _siraLog.Info($"{emote.Name}: 1");
             await semaphore.WaitAsync();
+            _siraLog.Info($"{emote.Name}: 2");
             try
             {
+                _siraLog.Info($"{emote.Name}: 3");
                 var sprite = await _spriteSourceBuilder.BuildSpriteAsync(emote.Source);
+                _siraLog.Info($"{emote.Name}: 4");
                 loadedBag.Add((emote, sprite));
+                _siraLog.Info($"{emote.Name}: 5");
             }
             finally
             {
+                _siraLog.Info($"{emote.Name}: 6");
                 semaphore.Release();
             }
-        });
+        }
 
+        var tasks = category.Emotes.Select(Runner);
+
+        _siraLog.Debug($"Starting {tasks.Count()} tasks");
         await Task.WhenAll(tasks);
+        _siraLog.Debug($"Finished {tasks.Count()} tasks");*/
+
+        foreach (var emote in category.Emotes)
+        {
+            var sprite = await _spriteSourceBuilder.BuildSpriteAsync(emote.Source);
+            loadedBag.Add((emote, sprite));
+        }
 
         await UnityMainThreadTaskScheduler.Factory.StartNew(() =>
         {
             if (_imagePoolContainer is null)
+            {
+                _siraLog.Debug("Could not acquire image pool container, bailing out of image creation");
                 return;
+            }    
 
             List<(Emote, Sprite)> loadedSprites = loadedBag.OrderBy(le => category.Emotes.IndexOf(le.Item1)).ToList();
+
+            _siraLog.Debug($"Spawning and setting {loadedSprites.Count} images from the pool");
             foreach (var emote in loadedSprites)
             {
                 var image = _imagePoolContainer.Spawn();
@@ -305,7 +338,9 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
 
                 image.EmoteClicked += Image_EmoteClicked;
             }
+            _siraLog.Debug("Showing emote specific content");
             ShowContent = true;
+            _siraLog.Debug("Scrolling to top");
             _scrollView.ScrollTo(0, false);
         });
     }
