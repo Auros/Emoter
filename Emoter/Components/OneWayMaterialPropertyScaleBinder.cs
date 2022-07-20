@@ -1,14 +1,15 @@
 ﻿using UnityEngine;
 
 namespace Emoter.Components;
+
 internal class OneWayMaterialPropertyScaleBinder : MonoBehaviour
 {
     private Material _material = null!;
     private static readonly string _scalePropertyName = "_Scale";
 
-    protected void Awake()
+    public void SetMaterial(Material material)
     {
-        _material = GetComponent<Renderer>().material;
+        _material = material;
     }
 
     protected void Update()

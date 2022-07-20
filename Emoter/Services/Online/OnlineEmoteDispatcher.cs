@@ -32,7 +32,7 @@ internal class OnlineEmoteDispatcher : IEmoteDispatcher
             _lastDispatched = Time.time;
         }    
 
-        _emoteDisplayService.Spawn(emote, new EmoteDisplayOptions(_config.Duration, _config.Distance, _fpfcSettings.Enabled ? new Vector3(0f, 1f, 1.75f) : _mainCamera.camera.transform.position, _mainCamera.camera.transform.forward));
+        _emoteDisplayService.Spawn(emote, new EmoteDisplayOptions(_config.Duration, _config.Distance, _fpfcSettings.Enabled ? new Vector3(0f, 1f, 1.75f) : _mainCamera.camera.transform.position + (_mainCamera.camera.transform.forward * 1f), _mainCamera.camera.transform.forward)); // Move the emote spawnpoint 0.2m in front of the head
         _multiplayerSessionManager.Send(new EmoteDispatchPacket(emote, _config.Duration, _config.Distance));
     }
 }

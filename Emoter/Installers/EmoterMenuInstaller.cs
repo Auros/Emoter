@@ -11,7 +11,8 @@ namespace Emoter.Installers;
 
 internal class EmoterMenuInstaller : Installer
 {
-    private GameObject? _sourceContainer;
+    private GameObject? _emoterImageSourceContainer;
+    private GameObject? _physicalEmoterSourceContainer;
 
     public override void InstallBindings()
     {
@@ -19,8 +20,8 @@ internal class EmoterMenuInstaller : Installer
         Container.BindInterfacesTo<EmotePacketReceiver>().AsSingle();
         Container.Bind<QuickEmoteViewController>().FromNewComponentAsViewController().AsSingle();
 
-        Container.BindMemoryPool<EmoterImage, EmoterImage.Pool>().WithId(EmoterImage.Pool.Id).WithInitialSize(0).FromMethod(FactoryMethod);
-
+        Container.BindMemoryPool<PhysicalEmote, PhysicalEmote.Pool>().WithInitialSize(0).FromMethod(FactorizePhysicalEmote);
+        Container.BindMemoryPool<EmoterImage, EmoterImage.Pool>().WithId(EmoterImage.Pool.Id).WithInitialSize(0).FromMethod(FactorizeEmoterImage);
 
         bool useLocal = true;
         if (useLocal)
@@ -34,15 +35,29 @@ internal class EmoterMenuInstaller : Installer
         }
     }
 
-    private EmoterImage FactoryMethod(DiContainer _)
+    private EmoterImage FactorizeEmoterImage(DiContainer _)
     {
         GameObject image = new("Emoter UI Image");
         image.SetActive(false);
 
-        if (_sourceContainer == null)
-            _sourceContainer = new GameObject("Emoter UI Image Pool Container");
+        if (_emoterImageSourceContainer == null)
+            _emoterImageSourceContainer = new GameObject("Emoter UI Image Pool Container");
 
-        image.transform.SetParent(_sourceContainer.transform);
+        image.transform.SetParent(_emoterImageSourceContainer.transform);
         return image.AddComponent<EmoterImage>();
+    }
+
+    private PhysicalEmote FactorizePhysicalEmote(DiContainer _)
+    {
+        var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.GetComponent<Collider>().enabled = false;
+        cube.name = "Physical Emote";
+        cube.SetActive(false);
+
+        if (_physicalEmoterSourceContainer == null)
+            _physicalEmoterSourceContainer = new GameObject("Physical Emote Pool Container");
+
+        cube.transform.SetParent(_physicalEmoterSourceContainer.transform);
+        return cube.AddComponent<PhysicalEmote>();
     }
 }

@@ -1,19 +1,17 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
-using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using Emoter.Components;
 using Emoter.Models;
 using Emoter.Services;
 using Emoter.Services.Other;
 using Emoter.UI.Main.Contexts;
-using HMUI;
+using IPA.Utilities;
 using IPA.Utilities.Async;
 using SiraUtil.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -33,16 +31,21 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
     private bool _showCategoryList = true;
     private EmoteCategory _selectedCategory = null!;
     protected MemoryPoolContainer<EmoterImage>? _imagePoolContainer;
+    private Signal _fixedSignal = null!;
 
     [Inject] protected readonly Config _config = null!;
     [Inject] protected readonly SiraLog _siraLog = null!;
     [Inject] protected readonly IEmoteService _emoteService = null!;
+    [Inject] protected readonly MenuShockwave _menuShockwave = null!;
     [Inject] protected readonly IEmoteDispatcher _emoteDispatcher = null!;
     [Inject] protected readonly IFavoritesTracker _favoritesTracker = null!;
     [Inject] protected readonly IEmoterInputService _emoterInputService = null!;
     [Inject] protected readonly ISpriteSourceBuilder _spriteSourceBuilder = null!;
     [Inject(Id = EmoterImage.Pool.Id)] protected readonly EmoterImage.Pool _imageMemoryPool = null!;
     [Inject, UIValue("selected-emote-context")] protected readonly SelectedEmoteContext _selectedEmoteContext = null!;
+
+    private static readonly FieldAccessor<Signal, Action>.Accessor Event = FieldAccessor<Signal, Action>.GetAccessor("_event");
+    private static readonly FieldAccessor<SignalOnUIButtonClick, Signal>.Accessor Signal = FieldAccessor<SignalOnUIButtonClick, Signal>.GetAccessor("_buttonClickedSignal");
 
     #region BSML
 
@@ -143,6 +146,22 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
 
         _imageMemoryPool.Clear();
         _imagePoolContainer = new(_imageMemoryPool);
+
+        // Disable the shockwave effect on the quick menu, as it's pretty annoying in VR
+        var clickers = GetComponentsInChildren<SignalOnUIButtonClick>(true);
+        if (_fixedSignal == null)
+        {
+            var firstClicker = clickers[0];
+            _fixedSignal = Instantiate(Signal(ref firstClicker));
+            Event(ref _fixedSignal) = Event(ref Signal(ref firstClicker));
+            _fixedSignal.Unsubscribe(_menuShockwave.HandleButtonClickEvent);
+        }
+
+        foreach (var clicker in clickers)
+        {
+            var assignedClicker = clicker;
+            Signal(ref assignedClicker) = _fixedSignal; 
+        }
     }
 
 

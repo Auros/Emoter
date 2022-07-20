@@ -1,5 +1,4 @@
-﻿using BeatSaberMarkupLanguage;
-using BeatSaberMarkupLanguage.Components;
+﻿using BeatSaberMarkupLanguage.Components;
 using Emoter.Models;
 using System;
 using System.Linq;
@@ -75,8 +74,6 @@ internal class EmoterImage : ClickableImage
             return _roundEdgeMaterial;
         }
     }
-
-
 
     public class Pool : MonoMemoryPool<EmoterImage>
     {

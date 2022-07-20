@@ -53,8 +53,8 @@ internal class EmotePacketReceiver : IInitializable, IDisposable
                 if (lastUsedTime + _config.MaximumEmoteRatePerPlayer > Time.time)
                     return;
             _lastEmotesReceived[connectedPlayer.userId] = Time.time;
-        }    
-        
+        }
+
         var head = GetPlayerHead(connectedPlayer);
 
         var emote = await _emoteService.GetEmoteAsync(packet.EmoteId);
@@ -67,7 +67,7 @@ internal class EmotePacketReceiver : IInitializable, IDisposable
         {
             var platformId = player.PlatformId;
             if (!await _playerValidator.ValidateAsync(emote, platformId))            
-                emote.Source = "Emoter.Resources.InvalidPermissions.png";
+                emote.Source = "Emoter.Resources.Errors.InvalidPermissions.png";
         }
 
         _emoteDisplayService.Spawn(emote, new EmoteDisplayOptions(packet.Time, packet.Distance, head.position + head.forward * 0.2f, head.forward * 0.2f)); // Move the emote spawnpoint 0.2m in front of the head

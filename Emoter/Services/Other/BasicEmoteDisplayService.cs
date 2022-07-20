@@ -1,6 +1,7 @@
 ﻿using Emoter.Components;
 using Emoter.Models;
 using IPA.Utilities.Async;
+using System;
 using System.Threading.Tasks;
 using Tweening;
 using UnityEngine;
@@ -10,15 +11,17 @@ namespace Emoter.Services.Other;
 internal class BasicEmoteDisplayService : IEmoteDisplayService
 {
     private readonly TweeningManager _tweeningManager;
+    private readonly PhysicalEmote.Pool _physicalEmotePool;
     private readonly ISpriteSourceBuilder _spriteSourceBuilder;
     private readonly IEmoterResourceService _emoterResourceService;
 
     public const float MaximumDistance = 10f;
     public const float MaximumDuration = 5f;
 
-    public BasicEmoteDisplayService(TimeTweeningManager tweeningManager, ISpriteSourceBuilder spriteSourceBuilder, IEmoterResourceService emoterResourceService)
+    public BasicEmoteDisplayService(TimeTweeningManager tweeningManager, PhysicalEmote.Pool physicalEmotePool, ISpriteSourceBuilder spriteSourceBuilder, IEmoterResourceService emoterResourceService)
     {
         _tweeningManager = tweeningManager;
+        _physicalEmotePool = physicalEmotePool;
         _spriteSourceBuilder = spriteSourceBuilder;
         _emoterResourceService = emoterResourceService;
     }
@@ -35,31 +38,27 @@ internal class BasicEmoteDisplayService : IEmoteDisplayService
 
         await UnityMainThreadTaskScheduler.Factory.StartNew(() =>
         {
-            Material mat = new(shader);
-            var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube.GetComponent<MeshRenderer>().material = mat;
-            cube.GetComponent<Collider>().enabled = false;
-            mat.mainTexture = sprite.texture;
-            cube.AddComponent<OneWayMaterialPropertyScaleBinder>();
+            var emote = _physicalEmotePool.Spawn();
+            emote.SetTexture(sprite.texture);
 
             Vector3 endPos;
             var originalPos = options.position;
-            cube.transform.localPosition = originalPos;
+            emote.transform.localPosition = originalPos;
 
-            endPos = cube.transform.localPosition + (options.direction ?? Vector3.forward) * options.distance + new Vector3(0f, 4f, 0f);
+            endPos = emote.transform.localPosition + (options.direction ?? Vector3.forward) * options.distance + new Vector3(0f, 4f, 0f);
 
             var tween = _tweeningManager.AddTween(new FloatTween(0f, 1f, v =>
             {
                 var lerped = Vector3.Lerp(originalPos, endPos, v);
                 lerped = new Vector3(lerped.x, Mathf.Lerp(originalPos.y, endPos.y, Easing.InQuint(v)), lerped.z);
-                cube.transform.localPosition = lerped;
-                cube.transform.localScale = Vector3.one * (1f - v);
+                emote.transform.localPosition = lerped;
+                emote.transform.localScale = Vector3.one * (1f - v);
 
-            }, options.duration, EaseType.OutSine), cube);
+            }, options.duration, EaseType.OutSine), emote);
+            
             tween.onCompleted += () =>
             {
-                UnityEngine.Object.Destroy(cube);
-                UnityEngine.Object.Destroy(mat);
+                _physicalEmotePool.Despawn(emote);
             };
         });
     }
