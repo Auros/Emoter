@@ -55,22 +55,14 @@ internal class CachedOnlineEmoteService : IEmoteService, IFavoritesTracker
         var offlines = await _offlineEmoteService.GetCategoriesAsync();
         _siraLog.Debug("Loaded offline categories");
 
-        IHttpResponse verifiedCategoriesResponse = null!;
-        try
+        // Hit the API for the verified categories.
+        _siraLog.Debug("Fetching online categories");
+        var verifiedCategoriesUrl = $"{_config.OnlineEmoteRepositoryAPI}/v1/categories/verified";
+        var verifiedCategoriesResponse = await _httpService.GetAsync(verifiedCategoriesUrl);
+        if (!verifiedCategoriesResponse.Successful)
         {
-            // Hit the API for the verified categories.
-            _siraLog.Debug("Fetching online categories");
-            var verifiedCategoriesUrl = $"{_config.OnlineEmoteRepositoryAPI}/v1/categories/verified";
-            verifiedCategoriesResponse = await _httpService.GetAsync(verifiedCategoriesUrl);
-            if (!verifiedCategoriesResponse.Successful)
-            {
-                _siraLog.Error($"Unable to get the verified categories list from '{verifiedCategoriesUrl}'");
-                return offlines;
-            }
-        }
-        catch (Exception e)
-        {
-            _siraLog.Error(e);
+            _siraLog.Error($"Unable to get the verified categories list from '{verifiedCategoriesUrl}'");
+            return offlines;
         }
 
         _siraLog.Debug("Getting user info");
@@ -192,5 +184,14 @@ internal class CachedOnlineEmoteService : IEmoteService, IFavoritesTracker
         _config.Favorites.Remove(emote.Id);
         _config.Changed();
         return Task.CompletedTask;
+    }
+
+    public void Clear()
+    {
+        _loadedFavorites = false;
+        _cachedCategories?.Clear();
+        _cachedEmotes.Clear();
+
+        _cachedCategories = null;
     }
 }

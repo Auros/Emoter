@@ -29,7 +29,6 @@ internal class EmoterInputService : IEmoterInputService, ILateTickable
             if (_valueThisFrame.HasValue)
                 return _valueThisFrame.Value;
 
-
             _valueThisFrame = _fpfcSettings.Enabled ? Input.GetKey(KeyCode.N) : _vrControllersInputManager.MenuButton();
             return _valueThisFrame.Value;
         }

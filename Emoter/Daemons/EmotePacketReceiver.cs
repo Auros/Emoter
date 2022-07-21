@@ -5,6 +5,7 @@ using MultiplayerCore.Networking;
 using MultiplayerCore.Players;
 using SiraUtil.Logging;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -20,8 +21,8 @@ internal class EmotePacketReceiver : IInitializable, IDisposable
     private readonly IPlayerValidator _playerValidator;
     private readonly MpPacketSerializer _mpPacketSerializer;
     private readonly IEmoteDisplayService _emoteDisplayService;
-    private readonly Dictionary<string, Transform> _playerHeadMap = new();
     private readonly Dictionary<string, float> _lastEmotesReceived = new();
+    private readonly ConcurrentDictionary<string, Transform> _playerHeadMap = new();
     private readonly Dictionary<string, MultiplayerLobbyAvatarController> _playerAvatarMap;
     private readonly FieldAccessor<AvatarPoseController, Transform>.Accessor HeadAccessor = FieldAccessor<AvatarPoseController, Transform>.GetAccessor("_headTransform");
     private readonly FieldAccessor<MultiplayerLobbyAvatarManager, Dictionary<string, MultiplayerLobbyAvatarController>>.Accessor PlayerAvatarMapAccessor = FieldAccessor<MultiplayerLobbyAvatarManager, Dictionary<string, MultiplayerLobbyAvatarController>>.GetAccessor("_playerIdToAvatarMap");
@@ -87,7 +88,7 @@ internal class EmotePacketReceiver : IInitializable, IDisposable
         var poseController = controller.GetComponentInChildren<AvatarPoseController>();
         headTransform = HeadAccessor(ref poseController);
 
-        _playerHeadMap[connectedPlayer.userId] = headTransform;
+        _playerHeadMap.TryAdd(connectedPlayer.userId, headTransform);
         return headTransform;
     }
 }

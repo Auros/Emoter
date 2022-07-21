@@ -162,6 +162,7 @@ internal class EmoteScreenDaemon : IInitializable, ITickable, IDisposable
 
         if (_fpfcSettings.Enabled)
         {
+            Console.WriteLine("FPFC is enabled");
             _emoterContainer.transform.SetParent(null);
             _emoterContainer.transform.localPosition = new Vector3(0f, 1.2f, 1.5f);
             _emoterContainer.transform.localScale = new(.02f, .02f, .02f);
@@ -169,6 +170,7 @@ internal class EmoteScreenDaemon : IInitializable, ITickable, IDisposable
         }
         else
         {
+            Console.WriteLine("FPFC is disabled");
             _emoterContainer.transform.SetParent(_menuControllerAccessor.LeftController.transform);
             _emoterContainer.transform.localPosition = new Vector3(0.2f, 0.2f, 0.1f);
             _emoterContainer.transform.localScale = new(.0075f, .0075f, .0075f);

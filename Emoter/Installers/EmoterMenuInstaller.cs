@@ -17,6 +17,7 @@ internal class EmoterMenuInstaller : Installer
     public override void InstallBindings()
     {
         Container.BindInterfacesTo<EmoteScreenDaemon>().AsSingle();
+        Container.BindInterfacesTo<EmoterInputService>().AsSingle();
         Container.BindInterfacesTo<EmotePacketReceiver>().AsSingle();
         Container.Bind<QuickEmoteViewController>().FromNewComponentAsViewController().AsSingle();
 

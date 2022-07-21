@@ -13,7 +13,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -166,6 +165,12 @@ internal class QuickEmoteViewController : BSMLAutomaticViewController
         }
     }
 
+    [UIAction("refresh")]
+    protected void Refresh()
+    {
+        _emoteService.Clear();
+        _ = Task.Run(LoadCategories);
+    }
 
     private void Image_EmoteClicked(EmoterImage _, Emote emote)
     {

@@ -32,7 +32,10 @@
         <text text="Distance" italics="true" align="BottomLeft" underlined="true" />
       </vertical>
       <increment-setting value="distance" apply-on-change="true" bind-value="true" text="" min="1" max="10" increment="0.5" pref-width="10" pref-height="8" />
-      <button text="Close" click-event="hide-settings" pref-width="25" />
+      <horizontal horizontal-fit="PreferredSize" vertical-fit="PreferredSize" pref-width="40">
+        <button text="Close" click-event="hide-settings" pref-width="18" />
+        <button text="Refresh" on-click="refresh" pref-width="18" />
+      </horizontal>
     </vertical>
   </modal>
 
@@ -42,7 +45,8 @@
         <text text="~selected-emote-name" align="Center" />
         <image id="selected-emote-image" pref-width="15" pref-height="15" preserve-aspect="true" />
         <action-button id="fav-button" text="~favorited-text" on-click="toggle-favorite" pref-width="25" />
-        <button text="Close" click-event="hide-emote-info" pref-width="25" />
+        <button text="Close" click-event="hide-emote-info" pref-width="20" />
+        
       </vertical>
     </modal>
   </macro.as-host>
@@ -50,5 +54,6 @@
   <vertical ignore-layout="true" anchor-pos-y="-44">
     <text text="Hold Left Trigger To Close" font-size="3" face-color="#ffffff55" italics="true" />
   </vertical>
+
 
 </vertical>

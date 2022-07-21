@@ -91,4 +91,10 @@ internal class OfflineEmoteService : IEmoteService, IFavoritesTracker
         _config.Changed();
         return Task.CompletedTask;
     }
+
+    public void Clear()
+    {
+        _loadedFavorites = false;
+        _favorites.Clear();
+    }
 }

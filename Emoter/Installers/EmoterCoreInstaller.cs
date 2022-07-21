@@ -13,7 +13,6 @@ internal class EmoterCoreInstaller : Installer
         bool useCachedService = true;
         bool useEmoteCoreWebAPI = true;
 
-        Container.BindInterfacesTo<EmoterInputService>().AsSingle();
         Container.BindInterfacesTo<EmoterResourceService>().AsSingle();
         Container.BindInterfacesTo<EmoteErrorSpriteService>().AsSingle();
     

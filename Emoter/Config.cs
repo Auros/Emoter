@@ -18,7 +18,7 @@ internal class Config
 
     public virtual float Duration { get; set; } = 4f;
     public virtual float Distance { get; set; } = 2.5f;
-    public virtual float MaximumEmoteRatePerPlayer { get; set; } = 0.3f;
+    public virtual float MaximumEmoteRatePerPlayer { get; set; } = 0.1f;
 
     [UseConverter(typeof(ListConverter<Guid, GuidConverter>))]
     public virtual List<Guid> Favorites { get; set; } = new();
