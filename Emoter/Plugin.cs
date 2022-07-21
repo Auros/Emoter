@@ -19,7 +19,7 @@ public class Plugin
     public Plugin(Conf conf, IPALogger logger, Zenjector zenjector, PluginMetadata pluginMetadata)
     {
         var config = conf.Generated<Config>();
-        config.MaximumEmoteRatePerPlayer = 0.1f;
+        config.MaximumEmoteRatePerPlayer = 0.22f;
         config.Version = pluginMetadata.HVersion;
 
         zenjector.UseAutoBinder();
