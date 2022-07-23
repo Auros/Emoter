@@ -9,7 +9,9 @@ Send emotes to your friends in multiplayer!
 
 # How To Use
 In a multiplayer lobby, hold down your **left trigger** to open the menu.
+
 You can hold down your **menu button** (same button you pause with) and click an emote to view more information about it and favorite it.
+
 Hold down your **left trigger** to close the menu.
 
 ## Suggest Emotes, Features, and Report Bugs!
