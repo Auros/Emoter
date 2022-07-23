@@ -3,7 +3,7 @@
   "id": "Emoter",
   "name": "Emoter",
   "author": "Auros",
-  "version": "0.1.0-b5",
+  "version": "0.1.0",
   "description": "#![Emoter.Resources.DESCRIPTION.md]",
   "gameVersion": "1.24.0",
   "dependsOn": {
